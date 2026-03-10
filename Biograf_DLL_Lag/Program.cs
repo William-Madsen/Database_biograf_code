@@ -1,5 +1,6 @@
-﻿using Microsoft.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System;
+using System.Data;
 using System.Timers;
 
 class Program
@@ -18,10 +19,11 @@ class Program
             Console.WriteLine("2 - Vis Film");
             Console.WriteLine("3 - Vis Lager");
             Console.WriteLine("4 - Vis Medarbejder");
-            Console.WriteLine("5 - Vis Orders");     
+            Console.WriteLine("5 - Vis Orders");
             Console.WriteLine("6 - Vis Adresse");
             Console.WriteLine("7 - Vis Kunder");
-            Console.WriteLine("8 - Afslut");
+            Console.WriteLine("8 - Stored Procedurece");
+            Console.WriteLine("0 - Afslut");
             Console.Write("Vælg: ");
 
             string valg = Console.ReadLine();
@@ -58,6 +60,11 @@ class Program
                     break;
 
                 case "8":
+                    visMenu2();
+                    menu = false;
+                    break;
+
+                case "0":
                     menu = false;
                     break;
 
@@ -200,7 +207,7 @@ class Program
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     using (SqlDataReader reader = cmd.ExecuteReader())
-                    { 
+                    {
                         Console.WriteLine("Order_ID - KundeID - Butik_Id - Antal_billeddeter - Film_ID - Film_navn - Mail");
                         while (reader.Read())
                         {
@@ -230,7 +237,7 @@ class Program
                 {
                     conn.Open();
 
-                    string query = "SELECT * FROM Adresse";
+                    string query = "SELECT * FROM Kunder.Adresse";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -258,7 +265,7 @@ class Program
                 {
                     conn.Open();
 
-                    string query = "SELECT * FROM Kunder";
+                    string query = "SELECT * FROM Kunder.Kunder";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -284,6 +291,127 @@ class Program
             }
 
             //Viser Stored Procedures...
+            static void visMenu2()
+            {
+                Console.Clear();
+                bool menu2 = true;
+
+                while (menu2)
+                {
+                    Console.WriteLine("---- MENU ----");
+                    Console.WriteLine("1 - Film data Overall");
+                    Console.WriteLine("2 - kunder by");
+                    Console.WriteLine("0 - Afslut");
+
+
+                    string valg2 = Console.ReadLine();
+
+                    switch (valg2)
+                    {
+
+                        case "1":
+                            visspfilmdataoverall();
+                            break;
+
+                        case "2":
+                            visspkunderby();
+                            break;
+
+                        case "0":
+                            menu2 = false;
+                            break;
+
+
+                        default:
+                            Console.WriteLine("Ugyldig valg");
+                            break;
+
+
+                    }
+                }
+            }
+
+            // Viser visspfilmdataoverall Stored Procedure
+            static void visspfilmdataoverall()
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string query = "dbo.spFilmdataTotalOverall"; 
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            Console.WriteLine("GrandTotal - Total Billederter - Film ID - Film navn");
+
+                            while (reader.Read())
+                            {
+                                int GrandTotal = reader.GetInt32(0);
+                                int Total_Billederter = reader.GetInt32(1);
+                                int film_ID = reader.GetInt32(2);
+                                string Film_navn = reader.GetString(3);
+                                
+
+                                Console.WriteLine($"{GrandTotal} - {Total_Billederter} - {film_ID} - {Film_navn}");
+                            }
+                        }
+                    }
+
+                    Console.WriteLine("Tryk 'Enter' at forsætte...");
+                    Console.ReadLine();
+                    Console.WriteLine("\n");
+                }
+            }
+
+            // Viser kunder efter postnummer
+            static void visspkunderby()
+            {
+                Console.Write("Indtast postnummer: ");
+                int postnummer = int.Parse(Console.ReadLine());
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string query = "dbo.spKunder_by";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@Post_Nummer", postnummer);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            Console.WriteLine("Order ID - (Fornavn - Efternavn) - Film navn - Film datetime - Film Pris - Antal billeder - Total Pris");
+
+                            while (reader.Read())
+                            {
+                                int Order_ID = reader.GetInt32(0);
+                                string Fornavn = reader.GetString(1);
+                                string Efternavn = reader.GetString(2);
+                                string Film_navn = reader.GetString(3);
+                                DateTime Film_datetime = reader.GetDateTime(4);
+                                int Film_Pris = reader.GetInt32(5);
+                                int Antal_billedter = reader.GetInt32(6);
+                                int TotalPris = reader.GetInt32(7);
+
+                                Console.WriteLine($"{Order_ID} - ({Fornavn} - {Efternavn}) - {Film_navn} - {Film_datetime} - {Film_Pris} - {Antal_billedter} - {TotalPris}");
+                            }
+                        }
+                    }
+
+                    Console.WriteLine("Tryk 'Enter' at fortsætte...");
+                    Console.ReadLine();
+                    Console.WriteLine("\n");
+                }
+            }
+
+
 
         }
     }
