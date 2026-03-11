@@ -7,7 +7,7 @@ using ClassLibBiograf;
 
 class front_ned
 {
-    static ClassLib connection = new ClassLib();
+    static ClassBio connection = new ClassBio();
     private static string connectionString = connection.connectionString;
 
     static void Main()

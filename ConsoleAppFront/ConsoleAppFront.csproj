@@ -51,7 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClassLibBiograf\ClassLibBiograf.csproj">
-      <Project>{26c45fe5-fddc-439c-a54b-7205769397ca}</Project>
+      <Project>{0ac2d65a-49a6-408d-9aa3-194fcde6c5c4}</Project>
       <Name>ClassLibBiograf</Name>
     </ProjectReference>
   </ItemGroup>
