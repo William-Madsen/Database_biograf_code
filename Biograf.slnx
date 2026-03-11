@@ -1,3 +1,4 @@
 <Solution>
-  <Project Path="Biograf_DLL_Lag/Biograf_DLL_Lag.csproj" />
+  <Project Path="ClassLibBiograf/ClassLibBiograf.csproj" Id="26c45fe5-fddc-439c-a54b-7205769397ca" />
+  <Project Path="ConsoleAppFront/ConsoleAppFront.csproj" Id="11d66d55-06a1-415b-8174-7bab1c2fac26" />
 </Solution>
