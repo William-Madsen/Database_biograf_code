@@ -363,9 +363,9 @@ class front_ned
                         visspkunderby();
                         break;
 
-                    //case "3":
-                    //    visAddfilm();
-                    //    break;
+                    case "3":
+                        visAddfilm();
+                        break;
 
                     case "9":
                         visMenu();
@@ -464,59 +464,42 @@ class front_ned
                 Console.WriteLine("\n");
             }
         }
-
-        //husk at fix denne del af kode :)
-        //// viser sted hvor man kan tilførge film
-        //static void visAddfilm()
-        //{
-        //    Console.Write("Indtast Film navn: ");
-        //    int Film_Navn = int.Parse(Console.ReadLine());
-
-        //    Console.Write("Indtast Film Pris: ");
-        //    int Film_Pris = int.Parse(Console.ReadLine());
-
-        //    Console.Write("Indtast Film dato: ");
-        //    int Film_Dato = int.Parse(Console.ReadLine());
-
-        //    using (SqlConnection conn = new SqlConnection(connectionString))
-        //    {
-        //        conn.Open();
-
-        //        string query = "dbo.Addfilm";
-
-        //        using (SqlCommand cmd = new SqlCommand(query, conn))
-        //        {
-        //            cmd.CommandType = CommandType.StoredProcedure;
-
-        //            cmd.Parameters.AddWithValue("@Film_Navn", Film_Navn);
-        //            cmd.Parameters.AddWithValue("@Film_Pris", Film_Pris);
-        //            cmd.Parameters.AddWithValue("@Film_Dato", Film_Dato);
-
-        //            using (SqlDataReader reader = cmd.ExecuteReader())
-        //            {
-        //                Console.WriteLine("Order ID - (Fornavn - Efternavn) - Film navn - Film datetime - Film Pris - Antal billeder - Total Pris");
-
-        //                while (reader.Read())
-        //                {
-        //                    int Order_ID = reader.GetInt32(0);
-        //                    string Fornavn = reader.GetString(1);
-        //                    string Efternavn = reader.GetString(2);
-        //                    string Film_navn = reader.GetString(3);
-        //                    DateTime Film_datetime = reader.GetDateTime(4);
-        //                    int Film_Pris = reader.GetInt32(5);
-        //                    int Antal_billedter = reader.GetInt32(6);
-        //                    int TotalPris = reader.GetInt32(7);
-
-        //                    Console.WriteLine($"{Order_ID} - ({Fornavn} - {Efternavn}) - {Film_navn} - {Film_datetime} - {Film_Pris} - {Antal_billedter} - {TotalPris}");
-        //                }
-        //            }
-        //        }
-
-        //        Console.WriteLine("Tryk 'Enter' at fortsætte...");
-        //        Console.ReadLine();
-        //        Console.WriteLine("\n");
-        //    }
-        //}
+        
+        // viser sted hvor man kan tilførge film
+        void visAddfilm()
+        {
+            Console.Write("Indtast Film navn: ");
+            string Film_Navn = Console.ReadLine();
+        
+            Console.Write("Indtast Film Pris: ");
+            int Film_Pris = int.Parse(Console.ReadLine());
+        
+            Console.Write("Indtast Film dato (yyyy-mm-dd): ");
+            DateTime Film_datetime = DateTime.Parse(Console.ReadLine());
+        
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+        
+                string query = "dbo.Addfilm";
+        
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+        
+                    cmd.Parameters.AddWithValue("@Film_Navn", Film_Navn);
+                    cmd.Parameters.AddWithValue("@Film_Pris", Film_Pris);
+                    cmd.Parameters.AddWithValue("@Film_datetime", Film_datetime);
+        
+                    cmd.ExecuteNonQuery();
+                }
+        
+                Console.WriteLine("Filmen er blevet tilføjet");
+                Console.WriteLine("Tryk 'Enter' for at fortsætte...");
+                Console.ReadLine();
+                Console.WriteLine("\n");
+            }
+        }
 
 
 
