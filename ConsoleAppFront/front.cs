@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -348,6 +348,7 @@ class front_ned
                 Console.WriteLine("3 - Add film");
                 Console.WriteLine("9 - Tables");
                 Console.WriteLine("0 - Afslut");
+                Console.Write("Vælg: ");
 
 
                 string valg2 = Console.ReadLine();
@@ -464,40 +465,48 @@ class front_ned
                 Console.WriteLine("\n");
             }
         }
-        
+
         // viser sted hvor man kan tilførge film
         void visAddfilm()
         {
             Console.Write("Indtast Film navn: ");
             string Film_Navn = Console.ReadLine();
-        
+
             Console.Write("Indtast Film Pris: ");
             int Film_Pris = int.Parse(Console.ReadLine());
-        
-            Console.Write("Indtast Film dato (yyyy-mm-dd): ");
-            DateTime Film_datetime = DateTime.Parse(Console.ReadLine());
-        
+
+            Console.Write("Indtast Film dato og tid (yyyy-MM-dd HH:mm) - tryk Enter for standard: ");
+            string dateInput = Console.ReadLine();
+
+            DateTime Film_datetime;
+            if (string.IsNullOrWhiteSpace(dateInput))
+            {
+                Random rnd = new Random();
+                int daysToAdd = rnd.Next(1, 6);
+                Film_datetime = DateTime.Now.Date.AddDays(daysToAdd).AddHours(19);
+                Console.WriteLine($"Bruger standard dato og tid: {Film_datetime:yyyy-MM-dd HH:mm}");
+            }
+            else
+            {
+                Film_datetime = DateTime.Parse(dateInput);
+            }
+
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-        
+
                 string query = "dbo.Addfilm";
-        
+
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-        
+
                     cmd.Parameters.AddWithValue("@Film_Navn", Film_Navn);
                     cmd.Parameters.AddWithValue("@Film_Pris", Film_Pris);
                     cmd.Parameters.AddWithValue("@Film_datetime", Film_datetime);
-        
+
                     cmd.ExecuteNonQuery();
                 }
-        
-                Console.WriteLine("Filmen er blevet tilføjet");
-                Console.WriteLine("Tryk 'Enter' for at fortsætte...");
-                Console.ReadLine();
-                Console.WriteLine("\n");
             }
         }
 
